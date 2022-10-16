@@ -1,15 +1,15 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Test.Iris.Cli (cliSpec) where
 
-import Test.Hspec (Spec, describe, it, shouldBe, expectationFailure, shouldReturn)
+import Test.Hspec (Spec, describe, expectationFailure, it, shouldBe, shouldReturn)
 
+import Iris.Cli (VersionSettings (versionSettingsMkDesc))
+import Iris.Cli.Interactive (InteractiveMode (..), handleInteractiveMode)
 import Iris.Cli.ParserInfo (cmdParserInfo)
-import Iris.Settings (defaultCliEnvSettings, cliEnvSettingsVersionSettings)
 import Iris.Cli.Version (defaultVersionSettings)
+import Iris.Settings (cliEnvSettingsVersionSettings, defaultCliEnvSettings)
 import qualified Options.Applicative as Opt
 import qualified Paths_iris as Autogen
-import Iris.Cli (VersionSettings(versionSettingsMkDesc))
-import Iris.Cli.Interactive (handleInteractiveMode, InteractiveMode (..))
 import System.Environment (lookupEnv)
 
 
@@ -20,19 +20,21 @@ expectedHelpText :: String
 expectedHelpText =
     "Simple CLI program\n\
     \\n\
-    \Usage: <iris-test> [--no-input]\n\
+    \Usage: <iris-test> [--no-input] [--colour Colour mode]\n\
     \\n\
     \  CLI tool build with iris - a Haskell CLI framework\n\
     \\n\
     \Available options:\n\
     \  -h,--help                Show this help text\n\
-    \  --no-input               Enter the terminal in non-interactive mode"
+    \  --no-input               Enter the terminal in non-interactive mode\n\
+    \  --colour Colour mode     Enable or disable colours"
 
 expectedHelpTextWithVersion :: String
 expectedHelpTextWithVersion =
     "Simple CLI program\n\
     \\n\
-    \Usage: <iris-test> [--version] [--numeric-version] [--no-input]\n\
+    \Usage: <iris-test> [--version] [--numeric-version] [--no-input] \n\
+    \                   [--colour Colour mode]\n\
     \\n\
     \  CLI tool build with iris - a Haskell CLI framework\n\
     \\n\
@@ -40,7 +42,8 @@ expectedHelpTextWithVersion =
     \  -h,--help                Show this help text\n\
     \  --version                Show application version\n\
     \  --numeric-version        Show only numeric application version\n\
-    \  --no-input               Enter the terminal in non-interactive mode"
+    \  --no-input               Enter the terminal in non-interactive mode\n\
+    \  --colour Colour mode     Enable or disable colours"
 
 expectedNumericVersion :: String
 expectedNumericVersion = "0.0.0.0"
